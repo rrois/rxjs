@@ -1,32 +1,27 @@
 import { map } from 'rxjs/internal/operators/Map';
 import { filter } from 'rxjs/internal/operators/Filter';
-
 import { delay } from 'rxjs/operators';
-
-
 import { fromEvent } from 'rxjs';
 
-let circle = document.getElementById('circle');
+let output = document.getElementById('output');
+let button = document.getElementById('button');
 
-let source = fromEvent(document, 'mousemove')
-    .pipe(
-        map((e: MouseEvent) => {
-            return {
-                x: e.clientX,
-                y: e.clientY
-            }
-        }),
-        filter(value => value.x < 500),
-        delay(500)
-    );
+let click = fromEvent(button, 'click');
 
-let onNext = function(value){
-    circle.style.left = value.x;
-    circle.style.top = value.y;
+let load = function(url: string) {
+  let xhr = new XMLHttpRequest();
+
+  xhr.addEventListener('load', () => {
+    let movies = JSON.parse(xhr.responseText);
+    movies.forEach(m => {
+      let div = document.createElement('div');
+      div.innerText = m.title;
+      output.appendChild(div);
+    });
+  });
+
+  xhr.open('GET', url);
+  xhr.send();
 };
-source.subscribe(
-    onNext,
-    error => console.log(`error: ${error}`),
-    () => console.log(`Complete!`));
 
-
+click.subscribe(e => load('movies.json'), error => console.log(`error: ${error}`), () => console.log(`Complete!`));
