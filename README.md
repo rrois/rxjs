@@ -12,7 +12,7 @@ Ejemplos de uso con observables
 `node_modules\.bin\typings install dt~es6-shim --global --save`
 
 ## Ejecución
-`node ./app/app`
+`npm start`
 
 ## Cliente
 `http://localhost:8080/`

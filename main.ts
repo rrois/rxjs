@@ -1,14 +1,20 @@
 import { Observable } from 'rxjs';
 
-let numbers = [1,2,3];
+let numbers = [1,2,3,4,5];
 let source = Observable.create(observer => {
-    for(let n of numbers){
-        if(n === 4) {
-            observer.error('Observable error');
+    
+    let index = 0;
+    let produceValue = () => {
+        observer.next(numbers[index++]);
+        if(index < numbers.length){
+            setTimeout(produceValue, 2000);
+        } else {
+            observer.complete();
         }
-        observer.next(n);
-    }
-    observer.complete();
+    };
+
+    produceValue();
+
 });
 
 source.subscribe(
