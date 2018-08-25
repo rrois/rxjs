@@ -17,8 +17,10 @@ class MyObserver implements Observer<number>{
     }
 }
 
-source.subscribe(
-    res => console.log(res)
-);
-
 source.subscribe(new MyObserver());
+
+source.subscribe(
+    value => console.log(`Next value in stream: ${value}`),
+    error => console.log(`error: ${error}`),
+    () => console.log(`Complete!`)
+);
