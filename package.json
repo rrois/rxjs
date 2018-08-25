@@ -1,0 +1,30 @@
+{
+  "name": "rxjs-observables",
+  "version": "1.0.0",
+  "description": "Ejemplos de uso con observables",
+  "scripts": {
+    "start": "webpack-dev-server --watch --inline",
+    "postinstall": "typings install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rrois/rxjs-observables.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rrois/rxjs-observables/issues"
+  },
+  "homepage": "https://github.com/rrois/rxjs-observables#readme",
+  "dependencies": {
+    "rxjs": "^6.2.2"
+  },
+  "devDependencies": {
+    "ts-loader": "^4.5.0",
+    "typescript": "^3.0.1",
+    "typings": "^2.1.1",
+    "webpack": "^4.17.1",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5"
+  }
+}
