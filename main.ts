@@ -15,11 +15,14 @@ let renderMovies = function(movies) {
   });
 };
 
-loadWithFetch('moviess.json').subscribe( 
+let subscription = load('moviess.json').subscribe( 
     renderMovies,
     e => console.log(`error: ${e}`),
     () => console.log('complete!')
 );
+
+console.log(subscription);
+subscription.unsubscribe();
 
 click
   .pipe(flatMap(e => loadWithFetch('movies.json')))
