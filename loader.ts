@@ -1,0 +1,41 @@
+import { Observable, defer } from './node_modules/rxjs';
+import { retryWhen, scan, takeWhile, delay } from './node_modules/rxjs/operators';
+import { fromPromise } from './node_modules/rxjs/internal/observable/fromPromise';
+
+export function load(url: string) {
+  return Observable.create(observer => {
+    let xhr = new XMLHttpRequest();
+
+    xhr.addEventListener('load', () => {
+      if (xhr.status === 200) {
+        let data = JSON.parse(xhr.responseText);
+        observer.next(data);
+        observer.complete();
+      } else {
+        observer.error(xhr.statusText);
+      }
+    });
+
+    xhr.open('GET', url);
+    xhr.send();
+  }).pipe(retryWhen(retryStrategy({ attempts: 3, delay: 1500 })));
+};
+
+export function loadWithFetch(url: string) {
+  return defer(() => {
+    return fromPromise(fetch(url).then(r => r.json()));
+  });
+}
+
+export function retryStrategy({ attempts = 4, delay: number = 1000 }) {
+  return function(errors: Observable<any>) {
+    return errors.pipe(
+      scan((accumulator, value) => {
+        console.log(accumulator, value);
+        return accumulator + 1;
+      }, 0),
+      takeWhile(accumulator => accumulator < 4),
+      delay(1000)
+    );
+  };
+};
