@@ -19,23 +19,37 @@ export function load(url: string) {
     xhr.open('GET', url);
     xhr.send();
   }).pipe(retryWhen(retryStrategy({ attempts: 3, delay: 1500 })));
-};
+}
 
 export function loadWithFetch(url: string) {
   return defer(() => {
-    return fromPromise(fetch(url).then(r => r.json()));
-  });
+    return fromPromise(
+      fetch(url).then(r => {
+        if (r.status === 200) {
+          return r.json();
+        } else {
+          return Promise.reject(r);
+        }
+      })
+    );
+  }).pipe(retryWhen(retryStrategy({ attempts: 3, delay: 1500 })));
 }
 
 export function retryStrategy({ attempts = 4, delay: number = 1000 }) {
   return function(errors: Observable<any>) {
     return errors.pipe(
       scan((accumulator, value) => {
-        console.log(accumulator, value);
+        accumulator += 1;
+        if(accumulator < attempts){
+            return accumulator;
+        } else {
+            throw new Error(value + '');
+        }
+            console.log(accumulator, value);
         return accumulator + 1;
       }, 0),
       takeWhile(accumulator => accumulator < 4),
       delay(1000)
     );
   };
-};
+}
