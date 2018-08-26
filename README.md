@@ -11,6 +11,11 @@ Ejemplos de uso con observables
 `npm install webpack webpack-dev-server webpack-cli typescript typings ts-loader --save-dev`
 `node_modules\.bin\typings install dt~es6-shim --global --save`
 
+## Habilitar fetch
+`typings uninstall es6-shim --save --global`
+`typings install dt~whatwg-streams --save --global`
+`typings install dt~whatwg-fetch --save --global`
+
 ## Ejecución
 `npm start`
 

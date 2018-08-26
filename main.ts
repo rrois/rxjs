@@ -1,7 +1,9 @@
 import { map } from 'rxjs/internal/operators/Map';
 import { filter } from 'rxjs/internal/operators/Filter';
 import { delay, flatMap, retry, retryWhen, scan, takeWhile } from 'rxjs/operators';
-import { Observable,  fromEvent } from 'rxjs';
+import { Observable,  fromEvent, defer } from 'rxjs';
+
+import { fromPromise } from 'rxjs/internal/observable/fromPromise';
 
 let output = document.getElementById('output');
 let button = document.getElementById('button');
@@ -29,6 +31,12 @@ let load = function(url: string) {
  );
 };
 
+function loadWithFech(url: string) {
+    return defer(() => {
+        return fromPromise(fetch(url).then( r => r.json()));
+    });
+}
+
 let retryStrategy = function ({attempts = 4, delay: number = 1000}) {
     return function(errors: Observable<any>){
         return errors.pipe(
@@ -50,8 +58,10 @@ let renderMovies = function(movies) {
       });
 }
 
+loadWithFech("movies.json");
+
 click.pipe(
-    flatMap(e => load("movies.json"))
+    flatMap(e => loadWithFech("movies.json"))
 ).subscribe(
     renderMovies,
     error => console.log(`error: ${error}`),
